@@ -1,9 +1,16 @@
 public class Task_2 implements Task_2_base {
     @Override
     public int subtask_1_while(int num) {
-        // Найти максимальное число, являющееся полным квадратом,
-        // не превосходящее заданное натуральное num
-        return 0;
+        int b=0;
+        int c=0;
+        while (b<=num) {
+            if (b*b<=num)
+             c=b*b;
+            else
+                break;
+            b++;
+        }
+        return c;
     }
 
     @Override
