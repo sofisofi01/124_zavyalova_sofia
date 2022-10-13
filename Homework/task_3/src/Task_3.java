@@ -1,40 +1,52 @@
 public class Task_3 implements Task_3_base {
     @Override
     public int subtask_1_for(int n1, int n2, int a, int b) {
-        // подсчитать, сколько чисел, кратных a, но не кратных b,
-        // находится между числами n1 и n2 включительно
-        return 0;
+        int k=0;
+        if (n1<n2)
+            for (;n1 <= n2; n1++){
+                if ((n1%a == 0) && (n1%b != 0))
+                    k++;
+            }
+        else
+            for (;n2 <= n1; n2++) {
+                if ((n2 % a == 0) && (n2 % b != 0))
+                    k++;
+            }
+        return k;
     }
 
     @Override
     public int subtask_2_for(int num) {
-        // Последовательность чисел строится следующим образом:
-        // сначала идет одна единица,
-        // потом две двойки,
-        // потом три тройки,
-        // ...
-        // потом n раз число n
-        // ...
-        // Найти, какое число будет находиться в этой последовательности
-        // на позиции num
-        return 0;
+        int k = 0;
+        int m = 1;
+        for (int i = 0; i <= num; i++) {
+            k++;
+            for (int j = 0; j < m; j++)
+                i++;
+            m++;
+    }
+        return k;
     }
 
     @Override
     public int subtask_3_for(int num, int d, int cnt) {
-        // Дана последовательность
-        // a(0) = num
-        // a(n) = a(n - 1) * d + 1
-        // Найти сумму первых cnt элементов последовательности
-        return 0;
+        int a = num;
+        int s = 0;
+        for (int i = 0; i < cnt; i++){
+            s = s + a;
+            a = a*d + 1;
+        }
+        return s;
     }
 
     @Override
     public int subtask_4_for(int n) {
-        // Вычислить сумму
-        // S(n) = 1 + 1 * 2 + 1 * 2 * 3 + ... + n!
-        // для заданного n
-        // (n! - это n-факториал. Кто не знает - гуглите)
-        return 0;
+        int k = 1;
+        int s = 0;
+        for(int i = 1; i <= n; i++) {
+            k = k * i;
+            s = s + k;
+        }
+        return s;
     }
 }
