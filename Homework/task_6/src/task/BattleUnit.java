@@ -43,8 +43,6 @@ public class BattleUnit {
             health -= enemy.strength;}
     }
 
-
-    //перещение
     public void moveUp(){
         y--;
     }
