@@ -1,6 +1,6 @@
 package task;
 
-public class Vector2 {
+public enum Direction {
     private double x;
     private double y;
 
