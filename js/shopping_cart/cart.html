@@ -1,8 +1,38 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
- <title>Корзина товаров</title>
- <script type="text/javascript">
+ <meta charset="UTF-8">
+ <title>Магазин</title>
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+ <section id="products">
+  <h2>Товары</h2>
+  <div class="product">
+   <h3>Телефон</h3>
+   <p>Смартфон Samsung Galaxy S10</p>
+   <p>Цена: 30000 руб.</p>
+   <input type="number" min="1" value="1">
+   <button class="add-to-cart">В корзину</button>
+  </div>
+  <div class="product">
+   <h3>Ноутбук</h3>
+   <p>Ноутбук Asus VivoBook S14</p>
+   <p>Цена: 50000 руб</p>
+   <input type="number" min="1" value="1">
+   <button class="add-to-cart">В корзину</button>
+  </div>
+ </section>
+
+ <section id="cart">
+  <h2>Корзина</h2>
+  <div id="cart-details"></div>
+  <p>Сумма заказа: <span id="cart-total"></span> руб.</p>
+  <button id="clear-cart">Очистить корзину</button>
+ </section>
+
+ <script>
   class Product {
    constructor(name, description, price, quantity) {
     this.name = name;
@@ -12,106 +42,64 @@
    }
   }
 
-  var products = [new Product("Product 1", "Description 1", 100, 1),
-      new Product("Product 2", "Description 2", 200, 2),
-      new Product("Product 3", "Description 3", 300, 3),
-      new Product("Product 4", "Description 4", 400, 4)];
+  let cart = [];
 
-  var cart = [];
-
-  function addProductToCart(index) {
-   cart.push(products[index]);
-   updateCart();
-  }
-
-  function updateCart() {
-   var total = 0;
-   var cartTable = document.getElementById("cartTableBody");
-   while (cartTable.firstChild) {
-    cartTable.removeChild(cartTable.firstChild);
+  function updateCartDetails() {
+   const cartDetails = document.querySelector('#cart-details');
+   if(cart.length === 0) {
+    cartDetails.innerHTML = "<p>Корзина пуста</p>";
+    document.querySelector('#cart-total').textContent = 0;
+    return;
    }
-   for (var i = 0; i < cart.length; i++) {
-    var product = cart[i];
-    var row = cartTable.insertRow();
-    var nameCell = row.insertCell();
-    var descriptionCell = row.insertCell();
-    var priceCell = row.insertCell();
-    var quantityCell = row.insertCell();
-    var subtotalCell = row.insertCell();
-    nameCell.innerHTML = product.name;
-    descriptionCell.innerHTML = product.description;
-    priceCell.innerHTML = product.price;
-    quantityCell.innerHTML = "<input type='number' min='1' value='" + product.quantity + "' onchange='updateProductQuantity(" + i + ", this.value)'>";
-    subtotalCell.innerHTML = product.price * product.quantity;
-    total += product.price * product.quantity;
+   let cartHTML = '';
+   let total = 0;
+   for (let i = 0; i < cart.length; i++) {
+    cartHTML += "<div class='cart-item'>";
+    cartHTML += "<p>" + cart[i].name + "</p>";
+    cartHTML += "<p>" + cart[i].quantity + " x " + cart[i].price + " руб.</p>";
+    cartHTML += "<p class='remove-item' data-index='" + i + "'>Удалить</p>";
+    cartHTML += "</div>";
+    total += cart[i].price * cart[i].quantity;
    }
-   document.getElementById("cartTotal").innerHTML = total;
+   cartDetails.innerHTML = cartHTML;
+   document.querySelector('#cart-total').textContent = total;
   }
 
-  function updateProductQuantity(index, quantity) {
-   cart[index].quantity = quantity;
-   updateCart();
-  }
+  jQuery(document).ready(function($) {
+   $('.add-to-cart').click(function() {
+    const index = $('.add-to-cart').index(this);
+    const name = $('.product h3').eq(index).text();
+    const description = $('.product p').eq(index).text();
+    const price = parseInt($('.product p').eq(index + 1).text().replace("Цена: ", "").replace(" руб.", ""));
+    const quantity = parseInt($('.product input').eq(index).val());
+    let cartItemIndex = -1;
+    for (let i = 0; i < cart.length; i++) {
+         if(cart[i].name === name) {
+          cartItemIndex = i;
+          break;
+         }
+        }
+        if(cartItemIndex === -1) {
+         const product = new Product(name, description, price, quantity);
+         cart.push(product);
+        } else {
+         cart[cartItemIndex].quantity += quantity;
+        }
+        updateCartDetails();
+     });
+
+     $(document).on('click', '.remove-item', function() {
+      const index = $(this).data("index");
+      cart.splice(index, 1);
+      updateCartDetails();
+     });
+
+     $('#clear-cart').click(function() {
+      cart = [];
+      updateCartDetails();
+     });
+  });
  </script>
-</head>
-<body>
- <h1>Товары</h1>
- <table>
-  <thead>
-   <tr>
-    <th>Наименование</th>
-    <th>Описание</th>
-    <th>Цена</th>
-    <th>Количество</th>
-    <th></th>
-   </tr>
-  </thead>
-  <tbody>
-   <tr>
-    <td>Product 1</td>
-    <td>Description 1</td>
-    <td>100</td>
-    <td><button onclick="addProductToCart(0)">Добавить в корзину</button></td>
-   </tr>
-   <tr>
-    <td>Product 2</td>
-    <td>Description 2</td>
-    <td>200</td>
-    <td><button onclick="addProductToCart(1)">Добавить в корзину</button></td>
-   </tr>
-   <tr>
-    <td>Product 3</td>
-    <td>Description 3</td>
-    <td>300</td>
-    <td><button onclick="addProductToCart(2)">Добавить в корзину</button></td>
-   </tr>
-   <tr>
-    <td>Product 4</td>
-    <td>Description 4</td>
-    <td>400</td>
-    <td><button onclick="addProductToCart(3)">Добавить в корзину</button></td>
-   </tr>
-  </tbody>
- </table>
- <h1>Корзина</h1>
- <table>
-  <thead>
-   <tr>
-    <th>Наименование</th>
-    <th>Описание</th>
-    <th>Цена</th>
-    <th>Количество</th>
-    <th>Сумма</th>
-   </tr>
-  </thead>
-  <tbody id="cartTableBody">
-  </tbody>
-  <tfoot>
-   <tr>
-    <td colspan="4">Итого:</td>
-    <td id="cartTotal"></td>
-   </tr>
-  </tfoot>
- </table>
+
 </body>
 </html>
